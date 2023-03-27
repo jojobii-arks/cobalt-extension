@@ -1,0 +1,10 @@
+{
+  "env": {
+    "__DEV__": "true"
+  },
+  "watch": [
+    "src", "utils", "vite.config.ts"
+  ],
+  "ext": "tsx,css,html,ts",
+  "exec": "pnpm build"
+}
