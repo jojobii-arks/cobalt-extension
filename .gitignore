@@ -25,3 +25,6 @@ dist-ssr
 
 cobalt
 vite.config.ts.*
+
+dist.crx
+dist.pem
