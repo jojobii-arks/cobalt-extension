@@ -4,7 +4,7 @@ function App() {
   const [url, setUrl] = useState<string>("");
   const [audioOnly, setAudioOnly] = useState<boolean>(true);
   const [cobaltEndpoint, setCobaltEndpoint] = useState<string>(
-    "http://localhost:9000/api/json"
+    "https://localhost:9000"
   );
 
   useEffect(() => {
@@ -14,7 +14,16 @@ function App() {
         setUrl(tab.url);
       }
     });
+    chrome.storage.local.get(["options"]).then((result) => {
+      setAudioOnly(result.options.audioOnly ?? false);
+      setCobaltEndpoint(result.options.cobaltEndpoint ?? "");
+    });
   }, []);
+
+  useEffect(() => {
+    console.log("hitting");
+    chrome.storage.local.set({ options: { cobaltEndpoint, audioOnly } });
+  }, [cobaltEndpoint, audioOnly]);
 
   const handleSubmit = useCallback(async () => {
     try {
@@ -29,7 +38,7 @@ function App() {
 
       console.log(payload);
 
-      const res = await fetch(cobaltEndpoint, {
+      const res = await fetch(`${cobaltEndpoint}/api/json`, {
         method: "POST",
         body: JSON.stringify(payload),
         headers: {
@@ -38,18 +47,27 @@ function App() {
         },
       });
 
-      if (res.status === 400) {
-        throw Error("Error 400: Incorrect payload for request.", {
-          cause: res,
-        });
-      }
-
       const data = await res.json();
 
-      if (data.url) {
-        window.open(data.url);
-      } else {
-        throw Error("Error ???: URL was not returned from server.");
+      switch (data.status) {
+        case "stream": {
+          window.open(data.url);
+          break;
+        }
+        case "picker": {
+          alert("TODO: Implement Picker");
+          break;
+        }
+        case "error": {
+          throw Error(data.text, {
+            cause: res,
+          });
+        }
+        default: {
+          throw Error("Error ???: Unexpected response from server", {
+            cause: res,
+          });
+        }
       }
     } catch (error) {
       console.error(error as any);
@@ -59,10 +77,10 @@ function App() {
         alert("Error ???: Something went wrong...");
       }
     }
-  }, [url, audioOnly]);
+  }, [url, audioOnly, cobaltEndpoint]);
 
   return (
-    <div className="w-[400px] m-2">
+    <div className="w-[400px] m-3">
       <div className="flex justify-between items-center mb-1">
         <h1 className="text-lg font-black">Cobalt Portal</h1>
         <label className="label cursor-pointer">
@@ -95,11 +113,29 @@ function App() {
           required
         />
 
-        <div className="form-control"></div>
-
-        <button className="w-full bg-black text-white p-2" type="submit">
+        <button className="w-full bg-black text-white p-2 mb-2" type="submit">
           🔗
         </button>
+
+        <label className="flex items-center gap-4">
+          <span
+            className="label-text font-xs"
+            title="Instance of Cobalt to connect to (i.e. https://co.arks.cafe)"
+          >
+            Cobalt URL
+          </span>
+          <input
+            className="flex-auto input input-xs input-bordered"
+            type="text"
+            name="url"
+            id="url"
+            value={cobaltEndpoint}
+            onChange={(e) => {
+              setCobaltEndpoint(e.target.value);
+            }}
+            required
+          />
+        </label>
       </form>
     </div>
   );
