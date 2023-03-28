@@ -51,7 +51,11 @@ function App() {
 
       switch (data.status) {
         case "stream": {
-          window.open(data.url);
+          window.open(data.url, "_blank");
+          break;
+        }
+        case "redirect": {
+          window.open(data.url, "_blank");
           break;
         }
         case "picker": {
