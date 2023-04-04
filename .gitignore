@@ -28,3 +28,4 @@ vite.config.ts.*
 
 dist.crx
 dist.pem
+public/manifest.json
