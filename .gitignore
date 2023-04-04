@@ -23,9 +23,9 @@ dist-ssr
 *.sln
 *.sw?
 
+# etc
+public/manifest.json
 cobalt
 vite.config.ts.*
-
 dist.crx
 dist.pem
-public/manifest.json
