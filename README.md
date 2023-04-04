@@ -1,7 +1,6 @@
 # cobalt-extension
 
 - A chrome extension for [@wukko/cobalt](https://github.com/wukko/cobalt)
-  - Not supported by current cobalt fork atm. Use a fork I made that enables CORS [`@jojobii-arks/cobalt-epic-style`](https://github.com/jojobii-arks/cobalt-epic-style)
 - Vite + React + TypeScript + TailwindCSS/DaisyUI
 - Meant as a proof of concept. Will elaborate on eventually.
 
