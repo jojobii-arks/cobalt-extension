@@ -29,3 +29,7 @@ cobalt
 vite.config.ts.*
 dist.crx
 dist.pem
+
+# ignore lock file
+
+pnpm-lock.yaml
