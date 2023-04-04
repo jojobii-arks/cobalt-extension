@@ -1,7 +1,13 @@
 import { useReducer } from 'react';
+import { AppSettings } from '../types';
 
 export default function useAppSettings() {
-  const initialSettings = {};
+  const initialSettings: AppSettings = {
+    cobaltEndpoint: '',
+    cobaltSettings: {
+      url: '',
+    },
+  };
 
   const reducer = () => {};
 
