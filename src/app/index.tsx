@@ -1,10 +1,16 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import isUrlSupported from "../utils/isUrlSupported";
 
 function App() {
   const [url, setUrl] = useState<string>("");
+  const isUrlValid = useMemo<boolean>(() => isUrlSupported(url), [url]);
   const [audioOnly, setAudioOnly] = useState<boolean>(true);
   const [cobaltEndpoint, setCobaltEndpoint] = useState<string>(
     "https://localhost:9000"
+  );
+  const ready = useMemo<boolean>(
+    () => url.length > 0 && cobaltEndpoint.length > 0,
+    [url, cobaltEndpoint]
   );
 
   useEffect(() => {
@@ -21,7 +27,6 @@ function App() {
   }, []);
 
   useEffect(() => {
-    console.log("hitting");
     chrome.storage.local.set({ options: { cobaltEndpoint, audioOnly } });
   }, [cobaltEndpoint, audioOnly]);
 
@@ -102,6 +107,7 @@ function App() {
       <form
         onSubmit={(e) => {
           e.preventDefault();
+          if (!ready) return;
           handleSubmit();
         }}
       >
@@ -117,8 +123,13 @@ function App() {
           required
         />
 
-        <button className="w-full bg-black text-white p-2 mb-2" type="submit">
-          🔗
+        <button
+          className="btn-block btn-sm btn mb-2"
+          type="submit"
+          disabled={!ready}
+          title={!ready || isUrlValid ? "" : "This URL may not be supported!"}
+        >
+          download {!ready || isUrlValid ? <></> : <>⚠️</>}
         </button>
 
         <label className="flex items-center gap-4">
