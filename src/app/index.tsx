@@ -1,15 +1,25 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import isUrlSupported from "../utils/isUrlSupported";
 
+/** URL regex */
+const regexUrl = new RegExp(
+  /https:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()!@:%_\+.~#?&\/\/=]*)/
+);
+
 function App() {
   const [url, setUrl] = useState<string>("");
-  const isUrlValid = useMemo<boolean>(() => isUrlSupported(url), [url]);
+  const [tabUrl, setTabUrl] = useState<string>("");
+  const isUrlValid = useMemo<boolean>(
+    () => (url ? isUrlSupported(url) : false),
+    [url]
+  );
+  const isUrlSame = useMemo<boolean>(() => url === tabUrl, [url, tabUrl]);
   const [audioOnly, setAudioOnly] = useState<boolean>(true);
   const [cobaltEndpoint, setCobaltEndpoint] = useState<string>(
-    "https://localhost:9000"
+    "https://co.wukko.me"
   );
   const ready = useMemo<boolean>(
-    () => url.length > 0 && cobaltEndpoint.length > 0,
+    () => url.length > 0 && regexUrl.test(url) && cobaltEndpoint.length > 0,
     [url, cobaltEndpoint]
   );
 
@@ -17,6 +27,8 @@ function App() {
     let queryOptions = { active: true, lastFocusedWindow: true };
     chrome.tabs.query(queryOptions, ([tab]) => {
       if (tab.url) {
+        /** Save tab.url to state since it can't be accessed in future query calls for some reason .3. */
+        setTabUrl(tab.url);
         setUrl(tab.url);
       }
     });
@@ -64,6 +76,7 @@ function App() {
           break;
         }
         case "picker": {
+          // TODO: Implement Picker
           alert("TODO: Implement Picker");
           break;
         }
@@ -90,44 +103,59 @@ function App() {
 
   return (
     <div className="w-[400px] m-3">
-      <div className="flex justify-between items-center mb-1">
-        <h1 className="text-lg font-black">Cobalt Portal</h1>
-        <label className="label cursor-pointer">
-          <span className="label-text mr-2">Audio Only?</span>
-          <input
-            type="checkbox"
-            className="toggle"
-            onChange={(e) => {
-              setAudioOnly(!audioOnly);
-            }}
-            checked={audioOnly}
-          />
-        </label>
-      </div>
       <form
         onSubmit={(e) => {
           e.preventDefault();
-          if (!ready) return;
           handleSubmit();
         }}
       >
-        <input
-          className="w-full mb-2 input input-sm input-bordered"
-          type="text"
-          name="url"
-          id="url"
-          value={url}
-          onChange={(e) => {
-            setUrl(e.target.value);
-          }}
-          required
-        />
+        <div className="flex justify-between items-center mb-1">
+          <h1 className="text-lg font-black">Cobalt Portal</h1>
+          <label className="label cursor-pointer">
+            <span className="label-text mr-2">Audio Only?</span>
+            <input
+              type="checkbox"
+              className="toggle"
+              onChange={(e) => {
+                setAudioOnly(!audioOnly);
+              }}
+              checked={audioOnly}
+            />
+          </label>
+        </div>
+
+        <div className="form-control">
+          <div className="input-group input-group-sm">
+            <input
+              className="w-full mb-2 input input-sm input-bordered"
+              type="text"
+              name="url"
+              id="url"
+              value={url}
+              onChange={(e) => {
+                setUrl(e.target.value);
+              }}
+              required
+            />
+            <button
+              className="btn btn-square btn-sm"
+              type="button"
+              disabled={isUrlSame}
+              title="reset link input"
+              onClick={(e) => {
+                setUrl(tabUrl);
+              }}
+            >
+              🔄️
+            </button>
+          </div>
+        </div>
 
         <button
           className="btn-block btn-sm btn mb-2"
           type="submit"
           disabled={!ready}
-          title={!ready || isUrlValid ? "" : "This URL may not be supported!"}
+          title={!ready || isUrlValid ? "" : "this link may not be supported!"}
         >
           download {!ready || isUrlValid ? <></> : <>⚠️</>}
         </button>
