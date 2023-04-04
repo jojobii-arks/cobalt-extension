@@ -1,25 +1,24 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
-import isUrlSupported from "../utils/isUrlSupported";
-
-/** URL regex */
-const regexUrl = new RegExp(
-  /https:\/\/(www\.)?[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()!@:%_\+.~#?&\/\/=]*)/
-);
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import checkIsUrlSupported from '../lib/utils/checkIrUrlSupported';
+import checkIsUrlRegex from '../lib/checkIsUrlRegex';
 
 function App() {
-  const [url, setUrl] = useState<string>("");
-  const [tabUrl, setTabUrl] = useState<string>("");
-  const isUrlValid = useMemo<boolean>(
-    () => (url ? isUrlSupported(url) : false),
+  const [url, setUrl] = useState<string>('');
+  const [tabUrl, setTabUrl] = useState<string>('');
+
+  const isUrlSupported = useMemo<boolean>(
+    () => (url ? checkIsUrlSupported(url) : false),
     [url]
   );
   const isUrlSame = useMemo<boolean>(() => url === tabUrl, [url, tabUrl]);
+
   const [audioOnly, setAudioOnly] = useState<boolean>(true);
+
   const [cobaltEndpoint, setCobaltEndpoint] = useState<string>(
-    "https://co.wukko.me"
+    'https://co.wukko.me'
   );
   const ready = useMemo<boolean>(
-    () => url.length > 0 && regexUrl.test(url) && cobaltEndpoint.length > 0,
+    () => url.length > 0 && checkIsUrlRegex(url) && cobaltEndpoint.length > 0,
     [url, cobaltEndpoint]
   );
 
@@ -32,9 +31,9 @@ function App() {
         setUrl(tab.url);
       }
     });
-    chrome.storage.local.get(["options"]).then((result) => {
+    chrome.storage.local.get(['options']).then((result) => {
       setAudioOnly(result.options.audioOnly ?? false);
-      setCobaltEndpoint(result.options.cobaltEndpoint ?? "");
+      setCobaltEndpoint(result.options.cobaltEndpoint ?? '');
     });
   }, []);
 
@@ -56,37 +55,37 @@ function App() {
       console.log(payload);
 
       const res = await fetch(`${cobaltEndpoint}/api/json`, {
-        method: "POST",
+        method: 'POST',
         body: JSON.stringify(payload),
         headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
         },
       });
 
       const data = await res.json();
 
       switch (data.status) {
-        case "stream": {
-          window.open(data.url, "_blank");
+        case 'stream': {
+          window.open(data.url, '_blank');
           break;
         }
-        case "redirect": {
-          window.open(data.url, "_blank");
+        case 'redirect': {
+          window.open(data.url, '_blank');
           break;
         }
-        case "picker": {
+        case 'picker': {
           // TODO: Implement Picker
-          alert("TODO: Implement Picker");
+          alert('TODO: Implement Picker');
           break;
         }
-        case "error": {
+        case 'error': {
           throw Error(data.text, {
             cause: res,
           });
         }
         default: {
-          throw Error("Error ???: Unexpected response from server", {
+          throw Error('Error ???: Unexpected response from server', {
             cause: res,
           });
         }
@@ -96,7 +95,7 @@ function App() {
       if (error instanceof Error) {
         alert(error.message);
       } else {
-        alert("Error ???: Something went wrong...");
+        alert('Error ???: Something went wrong...');
       }
     }
   }, [url, audioOnly, cobaltEndpoint]);
@@ -155,9 +154,11 @@ function App() {
           className="btn-block btn-sm btn mb-2"
           type="submit"
           disabled={!ready}
-          title={!ready || isUrlValid ? "" : "this link may not be supported!"}
+          title={
+            !ready || isUrlSupported ? '' : 'this link may not be supported!'
+          }
         >
-          download {!ready || isUrlValid ? <></> : <>⚠️</>}
+          download {!ready || isUrlSupported ? <></> : <>⚠️</>}
         </button>
 
         <label className="flex items-center gap-4">
