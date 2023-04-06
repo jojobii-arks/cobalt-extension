@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import checkIsUrlSupported from '../lib/utils/checkIrUrlSupported';
-import checkIsUrlRegex from '../lib/checkIsUrlRegex';
+import checkIsUrlRegex from '../lib/utils/checkIsUrlRegex';
 
 function App() {
   const [url, setUrl] = useState<string>('');
