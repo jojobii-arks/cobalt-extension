@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "watch": "nodemon",
+    "watch": "vite build -w",
     "build": "tsc && vite build",
     "preview": "vite preview",
     "format": "prettier . -w"
