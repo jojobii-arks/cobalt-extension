@@ -101,17 +101,17 @@ function App() {
   }, [url, audioOnly, cobaltEndpoint]);
 
   return (
-    <div className="w-[400px] m-3">
+    <div className="w-[400px] p-3 bg-main-300 text-main-content">
       <form
         onSubmit={(e) => {
           e.preventDefault();
           handleSubmit();
         }}
       >
-        <div className="flex justify-between items-center mb-1">
-          <h1 className="text-lg font-black">Cobalt Portal</h1>
-          <label className="label cursor-pointer">
-            <span className="label-text mr-2">Audio Only?</span>
+        <div className="flex justify-between items-center mb-4">
+          <h1 className="text-xl font-black">Cobalt Portal</h1>
+          <label className="cursor-pointer">
+            <span className="mr-2">Audio Only?</span>
             <input
               type="checkbox"
               className="toggle"
@@ -123,35 +123,34 @@ function App() {
           </label>
         </div>
 
-        <div className="form-control">
-          <div className="input-group input-group-sm">
-            <input
-              className="w-full mb-2 input input-sm input-bordered"
-              type="text"
-              name="url"
-              id="url"
-              value={url}
-              onChange={(e) => {
-                setUrl(e.target.value);
-              }}
-              required
-            />
-            <button
-              className="btn btn-square btn-sm"
-              type="button"
-              disabled={isUrlSame}
-              title="reset link input"
-              onClick={(e) => {
-                setUrl(tabUrl);
-              }}
-            >
-              🔄️
-            </button>
-          </div>
+        <div className="flex mb-4">
+          <input
+            className="w-full input"
+            type="text"
+            name="url"
+            id="url"
+            value={url}
+            onChange={(e) => {
+              setUrl(e.target.value);
+            }}
+            required
+          />
+
+          <button
+            className="btn px-2"
+            type="button"
+            disabled={isUrlSame}
+            title="reset link input"
+            onClick={(e) => {
+              setUrl(tabUrl);
+            }}
+          >
+            🔄️
+          </button>
         </div>
 
         <button
-          className="btn-block btn-sm btn mb-2"
+          className="btn p-2 mb-2 w-full"
           type="submit"
           disabled={!ready}
           title={
@@ -163,13 +162,13 @@ function App() {
 
         <label className="flex items-center gap-4">
           <span
-            className="label-text font-xs"
+            className="font-xs"
             title="Instance of Cobalt to connect to (i.e. https://co.arks.cafe)"
           >
             Cobalt URL
           </span>
           <input
-            className="flex-auto input input-xs input-bordered"
+            className="flex-auto font-xs input"
             type="text"
             name="url"
             id="url"
