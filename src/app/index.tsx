@@ -15,16 +15,18 @@ function App() {
   const [audioOnly, setAudioOnly] = useState<boolean>(true);
 
   const [cobaltEndpoint, setCobaltEndpoint] = useState<string>(
-    'https://co.wukko.me'
+    'http://localhost:9000'
   );
 
   const checkIfCorsIsEnabled = useCallback(async () => {
     try {
-      const res = await fetch(cobaltEndpoint);
-    } catch (error) {
-      console.error(error);
+      await fetch(`${cobaltEndpoint}/api/json`, {
+        method: 'POST',
+      });
+      alert(`CORS is enabled on this Cobalt instance. You're good to go!`);
+    } catch {
       alert(
-        'CORS is not enabled on the Cobalt instance you are trying to connect to.'
+        'CORS is not enabled on this Cobalt instance. Please use a different one!'
       );
     }
   }, [cobaltEndpoint]);
@@ -105,7 +107,10 @@ function App() {
     } catch (error) {
       console.error(error as any);
       if (error instanceof Error) {
-        alert(error.message);
+        // check if error is CORS error
+        if (error.message.includes('Failed to fetch')) {
+          alert('Error: CORS is not enabled on this Cobalt instance!');
+        } else alert(error.message);
       } else {
         alert('Error ???: Something went wrong...');
       }
@@ -190,6 +195,16 @@ function App() {
             }}
             required
           />
+          <button
+            className="btn px-2"
+            type="button"
+            title="test connection to Cobalt instance"
+            onClick={(e) => {
+              checkIfCorsIsEnabled();
+            }}
+          >
+            test
+          </button>
         </label>
       </form>
     </div>
