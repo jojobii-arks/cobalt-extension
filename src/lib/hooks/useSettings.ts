@@ -11,5 +11,5 @@ export default function useAppSettings() {
 
   const reducer = () => {};
 
-  const [state, dispatch] = useReducer(reducer);
+  // const [state, dispatch] = useReducer(reducer);
 }
