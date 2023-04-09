@@ -17,6 +17,18 @@ function App() {
   const [cobaltEndpoint, setCobaltEndpoint] = useState<string>(
     'https://co.wukko.me'
   );
+
+  const checkIfCorsIsEnabled = useCallback(async () => {
+    try {
+      const res = await fetch(cobaltEndpoint);
+    } catch (error) {
+      console.error(error);
+      alert(
+        'CORS is not enabled on the Cobalt instance you are trying to connect to.'
+      );
+    }
+  }, [cobaltEndpoint]);
+
   const ready = useMemo<boolean>(
     () => url.length > 0 && checkIsUrlRegex(url) && cobaltEndpoint.length > 0,
     [url, cobaltEndpoint]
