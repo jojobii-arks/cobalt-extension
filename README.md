@@ -1,14 +1,13 @@
 # cobalt-extension
 
 - A chrome extension for [@wukko/cobalt](https://github.com/wukko/cobalt)
-- Vite + React + TypeScript + TailwindCSS/DaisyUI
+- Vite + React + TypeScript + TailwindCSS
 - Meant as a proof of concept. Will elaborate on eventually.
 
 # Note
 
-- This extension does not work with Cobalt instances that don't allow CORS requests, which include the official instance at [co.wukko.me](https://co.wukko.me).
-  - Feel free to use the one I host at [co.arks.cafe](https://co.arks.cafe) when using this extension.
-  - Preferrably use host a Cobalt instance locally when testing.
+- Feel free to use the one I host at [co.arks.cafe](https://co.arks.cafe) (API URL: [api.co.arks.cafe](https://api.co.arks.cafe)) when using this extension.
+- Preferrably use host a Cobalt instance locally when testing.
 
 ## Preview
 
