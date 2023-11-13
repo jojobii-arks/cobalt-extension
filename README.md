@@ -1,3 +1,9 @@
+# archive notice
+
+i wanna do this again but with a fresher mind lol
+
+---
+
 # cobalt-extension
 
 - A chrome extension for [@wukko/cobalt](https://github.com/wukko/cobalt)
